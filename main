@@ -7,7 +7,6 @@ int purchases = 0;
 
 // activate(card_num, card_pin) activates the card if valid, and prints 
 // appropriate messages
-// effects: modifies global variables, produces output
 void activate(const int card_num, const int card_pin) {
   if (((card_num >= 10000000) && (card_num <= 99999999)) && ((card_pin >= 1000)
   && (card_pin <= 9999))) {
@@ -30,7 +29,6 @@ void activate(const int card_num, const int card_pin) {
 
 // cancel(card_num) cancels the card if active and valid, and prints 
 // appropriate messages
-// effects: modifies global variables, produces output
 void cancel(int card_num) {
   if ((active == true) && (card_num == globalcardnum)) {
     active = false; 
@@ -52,7 +50,6 @@ void cancel(int card_num) {
 }
 
 // print_balance() prints the current points balance and cash back balance
-// effects: produces output
 void print_balance(void) {
   if (active == true) {
     printf("Your points balance is %d and your cash back balance is $%d.%02d.\n"
@@ -65,7 +62,6 @@ void print_balance(void) {
 
 // purchase(student_pin, amount) records a purchase if valid, and prints 
 // appropriate messages
-// effects: modifies global variables, produces output
 void purchase(const int student_pin, const int amount) {
   if ((active == true) && (student_pin == globalcardpin) && (amount > 0)) {
     purchases = purchases + 1;
@@ -95,7 +91,6 @@ void purchase(const int student_pin, const int amount) {
 
 // sell(paperbacks, hardcovers) records a sale if valid, and prints 
 // appropriate messages
-// effects: modifies global variables, produces output
 void sell(const int paperbacks, const int hardcovers) {
   int points_for_sale = ((paperbacks * 75) + (hardcovers * 170));
   if ((active == true) && (paperbacks > 0) && (hardcovers > 0)) {
@@ -147,12 +142,6 @@ void sell(const int paperbacks, const int hardcovers) {
 "You made a purchase of $%d.%.02d.\n"
 
 */
-
-/////////////////////////////////////////////
-// DO NOT MODIFY THE CODE BELOW
-// THIS CODE PROVIDES THE IO TESTING
-// FRAMEWORK FOR YOUR FUNCTIONS
-/////////////////////////////////////////////
 
 int main(void) {
 
