@@ -1,0 +1,196 @@
+bool active = false;
+int globalcardpin = 0;
+int globalcardnum = 0;
+int points = 0;
+int purchases = 0;
+ 
+
+// activate(card_num, card_pin) activates the card if valid, and prints 
+// appropriate messages
+// effects: modifies global variables, produces output
+void activate(const int card_num, const int card_pin) {
+  if (((card_num >= 10000000) && (card_num <= 99999999)) && ((card_pin >= 1000)
+  && (card_pin <= 9999))) {
+    active = true;
+    globalcardpin = card_pin;
+    globalcardnum = card_num;
+    printf("The card has been activated successfully.\n");
+  } else if ((card_num >= 10000000) && (card_num <= 99999999)) {
+    printf("An error occurred activating the card.\n");
+    printf("The card number is not an 8-digit integer.\n");
+  } else if ((card_pin >= 1000) && (card_pin <= 9999)){
+    printf("An error occurred activating the card.\n");
+    printf("The card pin is not an 4-digit integer.\n");
+  } else {
+    printf("An error occurred activating the card.\n");
+    printf("The card number is not an 8-digit integer.\n");
+    printf("The card pin is not an 4-digit integer.\n");
+  }
+}
+
+// cancel(card_num) cancels the card if active and valid, and prints 
+// appropriate messages
+// effects: modifies global variables, produces output
+void cancel(int card_num) {
+  if ((active == true) && (card_num == globalcardnum)) {
+    active = false; 
+    printf("The card has been canceled successfully.\n");
+    printf("You will receive $%d.%02d for the outstanding points " 
+    "balance of %d.\n", (points / 50) / 100, (points / 50) % 100, points);
+  } else if ((active == true) && !(card_num == globalcardnum)) {
+    printf("An error occurred canceling the card.\n");
+    printf("The card number provided is incorrect.\n");
+    } else if ((active == false) && (card_num == globalcardnum)) {
+      printf("An error occurred canceling the card.\n");
+      printf("The card is inactive.\n");
+    } else {
+      printf("An error occurred canceling the card.\n");
+      printf("The card is inactive.\n");
+      printf("The card number provided is incorrect.\n");
+    }
+  return;
+}
+
+// print_balance() prints the current points balance and cash back balance
+// effects: produces output
+void print_balance(void) {
+  if (active == true) {
+    printf("Your points balance is %d and your cash back balance is $%d.%02d.\n"
+    , points, (points / 50) / 100, (points / 50) % 100);
+  } else {
+    printf("The card is inactive.\n");
+  }
+}
+
+
+// purchase(student_pin, amount) records a purchase if valid, and prints 
+// appropriate messages
+// effects: modifies global variables, produces output
+void purchase(const int student_pin, const int amount) {
+  if ((active == true) && (student_pin == globalcardpin) && (amount > 0)) {
+    purchases = purchases + 1;
+    if ((((points + amount) > 10000) || (purchases >= 10)) && (points > 0)) {
+      printf("You redeemed %d points for $%d.%.02d cash back.\n", points, 
+      (points / 50) / 100, (points / 50) % 100);
+      points = amount;
+      printf("You made a purchase of $%d.%.02d.\n", amount / 100, amount % 100);
+      print_balance();
+    } else {
+      points = amount + points;
+      purchases = purchases + 1;
+      printf("You made a purchase of $%d.%.02d.\n", amount / 100, amount % 100);
+      print_balance();
+    }
+  } else {
+    printf("An error occurred making a purchase.\n");
+    if (!(active == true)) {
+    printf("The card is inactive.\n");
+  } if (!(student_pin == globalcardpin)){
+    printf("You entered an incorrect PIN.\n");
+  } if (!(amount > 0)) {
+    printf("The purchase amount is not positive.\n");
+  }
+  }
+}
+
+// sell(paperbacks, hardcovers) records a sale if valid, and prints 
+// appropriate messages
+// effects: modifies global variables, produces output
+void sell(const int paperbacks, const int hardcovers) {
+  int points_for_sale = ((paperbacks * 75) + (hardcovers * 170));
+  if ((active == true) && (paperbacks > 0) && (hardcovers > 0)) {
+    purchases = purchases + 1;
+    if ((((points + points_for_sale) > 10000) || (purchases >= 10)) && 
+    (points > 0)) {
+    printf("You redeemed %d points for $%d.%.02d cash back.\n", points, 
+    (points / 50) / 100, (points / 50) % 100);
+    points = points_for_sale;
+    printf("You earned %d points making a sale.\n", points);
+    print_balance();
+    } else {
+      printf("You earned %d points making a sale.\n", points_for_sale);
+      points = points_for_sale + points;
+      purchases = purchases + 1;
+      print_balance();
+    }
+  } else {
+    printf("An error occurred making a sale.\n");
+    if (!(active == true)) {
+    printf("The card is inactive.\n");
+  } if (paperbacks < 0) {
+    printf("The number of paperbacks is not positive.\n");
+  } if (hardcovers < 0) {
+    printf("The number of hardcovers is not positive.\n");
+  }
+}
+}
+
+/* useful printf strings:
+
+"An error occurred activating the card.\n"
+"The card is already activated.\n"
+"The card number is not an 8-digit integer.\n"
+"The card pin is not an 4-digit integer.\n"
+"The card has been activated successfully.\n"
+"An error occurred canceling the card.\n"
+"The card is inactive.\n"
+"The card number provided is incorrect.\n"
+"The card has been canceled successfully.\n"
+"You will receive $%d.%02d for the outstanding points balance of %d.\n"
+"Your points balance is %d and your cash back balance is $%d.%02d.\n"
+"The card is inactive.\n"
+"You redeemed %d points for $%d.%.02d cash back.\n"
+"An error occurred making a purchase.\n"
+"The card is inactive.\n"
+"You entered an incorrect PIN.\n"
+"The purchase amount is not positive.\n"
+"You made a purchase of $%d.%.02d.\n"
+
+*/
+
+/////////////////////////////////////////////
+// DO NOT MODIFY THE CODE BELOW
+// THIS CODE PROVIDES THE IO TESTING
+// FRAMEWORK FOR YOUR FUNCTIONS
+/////////////////////////////////////////////
+
+int main(void) {
+
+  const int ACTIVATE = lookup_symbol("activate");
+  const int CANCEL = lookup_symbol("cancel");
+  const int BALANCE = lookup_symbol("balance");
+  const int PURCHASE = lookup_symbol("purchase");
+  const int SELL = lookup_symbol("sell");
+  const int QUIT = lookup_symbol("quit");
+
+  int cmd = 0;
+
+  while (1) {
+    cmd = read_symbol();
+    if (cmd == QUIT) {
+      break;
+    } else if (cmd == ACTIVATE) {
+      int num = read_int();
+      int pin = read_int();
+      activate(num, pin);
+    } else if (cmd == CANCEL) {
+      int num = read_int();
+      cancel(num);
+    } else if (cmd == BALANCE) {
+      print_balance();
+    } else if (cmd == PURCHASE) {
+      int pin = read_int();
+      int amount = read_int();
+      purchase(pin, amount);
+    } else if (cmd == SELL) {
+      int paperbacks = read_int();
+      int hardcovers = read_int();
+      sell(paperbacks, hardcovers);
+    } else {
+      printf("Unexpected command: ");
+      print_symbol(cmd);
+      printf("\n");
+      break;
+    }
+  }
+}
